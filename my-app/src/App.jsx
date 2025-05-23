@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { ConfigProvider, Button, Switch } from 'antd';
+import { ConfigProvider, Button, Switch, Layout, Typography } from 'antd';
 import 'antd/dist/reset.css';
+const { Title } = Typography;
+import ProductTable from './list/ProductList';
 
 const lightTheme = {
   token: {
@@ -25,8 +27,11 @@ function App() {
     <ConfigProvider theme={isDarkMode ? darkTheme : lightTheme}>
       <div
         style={{
+          display: 'flex',
+          alignItems:'center',
+          justifyContent:'flex-end',
+          gap:'20px',
           padding: '2rem',
-          minHeight: '100vh',
           background: isDarkMode
             ? darkTheme.token.colorBgContainer
             : lightTheme.token.colorBgContainer,
@@ -36,17 +41,18 @@ function App() {
           transition: 'all 0.3s ease',
         }}
       >
-        <h1>Ant Design v5 Theme Switcher</h1>
+        <h2 style={{ marginBottom: '0' }}>Theme</h2>
         <Switch
           checked={isDarkMode}
           onChange={() => setIsDarkMode(!isDarkMode)}
           checkedChildren="Dark"
           unCheckedChildren="Light"
-          style={{ marginBottom: '1rem' }}
         />
-        <br />
-        <Button type="primary">Primary Button</Button>
       </div>
+      <Layout style={{ padding: "20px" }}>
+        <Title level={2}>Product List</Title>
+        <ProductTable />
+      </Layout>
     </ConfigProvider>
   );
 }
