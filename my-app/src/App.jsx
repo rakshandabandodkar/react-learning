@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { ConfigProvider, Button, Switch, Layout, Typography } from 'antd';
+import { ConfigProvider, Button, Switch, Layout, Typography, message } from 'antd';
 import 'antd/dist/reset.css';
 const { Title } = Typography;
 import ProductTable from './list/ProductList';
+import './common/common-style.scss'
+import styles from './App.module.scss';
 
 const lightTheme = {
   token: {
@@ -49,9 +51,9 @@ function App() {
           unCheckedChildren="Light"
         />
       </div>
-      <Layout style={{ padding: "20px" }}>
+      <Layout className={styles.padding20}>
         <Title level={2}>Product List</Title>
-        <ProductTable />
+         <ProductTable />
       </Layout>
     </ConfigProvider>
   );
