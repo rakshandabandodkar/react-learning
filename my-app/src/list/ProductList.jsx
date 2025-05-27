@@ -1,15 +1,20 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, message } from "antd";
+import { useSearchParams } from "react-router-dom";
 import styles from './ProductList.module.scss';
 
 const ProductTable = () => {
-
   const [products, setProducts] = useState([]);
   const [loading, isloading] = useState(false);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const initialPage = parseInt(searchParams.get("page")) || 1;
+  const initialPageSize = parseInt(searchParams.get("pageSize")) || 10;
+
   const [params, setParams] = useState({
-    page: parseInt(localStorage.getItem("page")) || 1,
-    pageSize: parseInt(localStorage.getItem("pageSize")) || 10,
+    page: initialPage,
+    pageSize: initialPageSize,
     total: 0,
   });
 
@@ -27,7 +32,7 @@ const ProductTable = () => {
 
       const data = await res.json();
       setProducts(data.products);
-      setParams(prev => ({ ...prev, total: data.total }));
+      setParams((prev) => ({ ...prev, total: data.total }));
     } catch (error) {
       console.error("Error fetching products:", error);
       message.error("Failed to fetch products. Please try again later.");
@@ -35,20 +40,15 @@ const ProductTable = () => {
       isloading(false);
     }
   };
-  const renderCount = useRef(1);
 
-  useEffect(() => {
-    renderCount.current += 1;
-    console.log(`ProductTable rendered ${renderCount.current} times`);
-  });
   useEffect(() => {
     fetchProducts();
   }, [params.page, params.pageSize]);
 
-  useEffect(() => {
-    localStorage.setItem("page", params.page);
-    localStorage.setItem("pageSize", params.pageSize);
-  }, [params.page, params.pageSize]);
+  const handlePageChange = (page, pageSize) => {
+    setParams((prev) => ({ ...prev, page, pageSize }));
+    setSearchParams({ page, pageSize }); // ✅ update URL
+  };
 
   const columns = [
     { title: "ID", dataIndex: "id", key: "id" },
@@ -74,8 +74,7 @@ const ProductTable = () => {
         pageSize: params.pageSize,
         total: params.total,
         showSizeChanger: true,
-        onChange: (page, pageSize) =>
-          setParams(prev => ({ ...prev, page, pageSize })),
+        onChange: handlePageChange,
       }}
     />
   );
