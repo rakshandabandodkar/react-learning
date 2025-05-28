@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
-import { ConfigProvider, Button, Switch } from 'antd';
+import { ConfigProvider, Button, Switch, Layout, Typography, message } from 'antd';
 import 'antd/dist/reset.css';
+const { Title } = Typography;
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import ProductTable from './list/ProductList';
+import './common/common-style.scss'
+import styles from './App.module.scss';
 
 const lightTheme = {
   token: {
@@ -25,8 +30,11 @@ function App() {
     <ConfigProvider theme={isDarkMode ? darkTheme : lightTheme}>
       <div
         style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+          gap: '20px',
           padding: '2rem',
-          minHeight: '100vh',
           background: isDarkMode
             ? darkTheme.token.colorBgContainer
             : lightTheme.token.colorBgContainer,
@@ -36,17 +44,26 @@ function App() {
           transition: 'all 0.3s ease',
         }}
       >
-        <h1>Ant Design v5 Theme Switcher</h1>
+        <h2 style={{ marginBottom: '0' }}>Theme</h2>
         <Switch
           checked={isDarkMode}
           onChange={() => setIsDarkMode(!isDarkMode)}
           checkedChildren="Dark"
           unCheckedChildren="Light"
-          style={{ marginBottom: '1rem' }}
         />
-        <br />
-        <Button type="primary">Primary Button</Button>
       </div>
+      <Layout className={styles.padding20}>
+        <Title level={2}>Product List</Title>
+        <Router>
+          <Routes>
+            {/* Redirect root / to /products */}
+            <Route path="/" element={<Navigate to="/products" replace />} />
+
+            {/* Route to your product table */}
+            <Route path="/products" element={<ProductTable />} />
+          </Routes>
+        </Router>
+      </Layout>
     </ConfigProvider>
   );
 }
