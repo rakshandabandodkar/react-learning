@@ -1,7 +1,7 @@
 $color-primary: '#646cff';
 // styles.scss
 body {
-  background-color: #000000;
+  background-color: #ffffff;
 }
 
 .custom-button {
@@ -9,4 +9,23 @@ body {
   color: #fff;
   padding: 10px 20px;
   border-radius: 8px;
+}
+.custom-drawer{
+.ant-drawer-close{
+  position: absolute;
+    left: -38px;
+    background: white;
+    width: 40px;
+    padding: 4px;
+    top: 0;
+    height: 40px;
+}
+}
+.w-100{
+  width: 100%!important;
+}
+.drawer-footer{
+  .ant-space,.ant-space-item,.ant-btn{
+    width: 100%;
+  }
 }
