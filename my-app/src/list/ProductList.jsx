@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Table, message } from "antd";
 import { useSearchParams } from "react-router-dom";
 import styles from './ProductList.module.scss';
-
+import Header from './Header';
+import CreateProductDrawer from '../create/CreateProductDrawer';
 const ProductTable = () => {
+  const [drawerVisible, setDrawerVisible] = useState(false);
   const [products, setProducts] = useState([]);
   const [loading, isloading] = useState(false);
 
@@ -47,7 +49,7 @@ const ProductTable = () => {
 
   const handlePageChange = (page, pageSize) => {
     setParams((prev) => ({ ...prev, page, pageSize }));
-    setSearchParams({ page, pageSize }); // ✅ update URL
+    setSearchParams({ page, pageSize }); 
   };
 
   const columns = [
@@ -64,19 +66,31 @@ const ProductTable = () => {
   ];
 
   return (
-    <Table
-      columns={columns}
-      dataSource={products}
-      rowKey="id"
-      loading={loading}
-      pagination={{
-        current: params.page,
-        pageSize: params.pageSize,
-        total: params.total,
-        showSizeChanger: true,
-        onChange: handlePageChange,
-      }}
-    />
+    <div>
+      {/* header component containing create btn */}
+      <Header onCreate={() => setDrawerVisible(true)} />
+      <CreateProductDrawer
+        visible={drawerVisible}
+        onClose={() => setDrawerVisible(false)}
+        onProductCreated={(newProduct) => {
+          setProducts((prev) => [newProduct, ...prev]); // show new product in list
+        }}
+      />
+      <Table
+        columns={columns}
+        dataSource={products}
+        rowKey="id"
+        loading={loading}
+        pagination={{
+          current: params.page,
+          pageSize: params.pageSize,
+          total: params.total,
+          showSizeChanger: true,
+          onChange: handlePageChange,
+        }}
+      />
+    </div>
+
   );
 };
 
