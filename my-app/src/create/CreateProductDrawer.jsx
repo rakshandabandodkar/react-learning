@@ -133,6 +133,7 @@ const CreateProductDrawer = ({ visible, onClose, onProductCreated }) => {
           <Select placeholder="Select a category">
             {categories.map((cat) => (
               <Option key={cat} value={cat}>
+                {/* to make the first letter capital */}
                 {cat.charAt(0).toUpperCase() + cat.slice(1)}
               </Option>
             ))}
