@@ -15,11 +15,10 @@ const { Option } = Select;
 const CreateProductDrawer = ({ visible, onClose, onProductCreated }) => {
   const [form] = Form.useForm();
   const [loading, isloading] = useState(false);
-  const [isModified, setIsModified] = useState(false);
   const [categories, setCategories] = useState([]);
 
   const handleClose = () => {
-    if (isModified) {
+    if (form.isFieldsTouched()) {
       Modal.confirm({
         title: "Discard Changes?",
         content: "You have unsaved changes. Are you sure you want to close?",
@@ -27,7 +26,6 @@ const CreateProductDrawer = ({ visible, onClose, onProductCreated }) => {
         cancelText: "No",
         onOk: () => {
           form.resetFields();
-          setIsModified(false);
           onClose();
         },
       });
@@ -53,7 +51,6 @@ const CreateProductDrawer = ({ visible, onClose, onProductCreated }) => {
       const data = await res.json();
       message.success("Product created successfully!");
       form.resetFields();
-      setIsModified(false);
       onClose();
       onProductCreated(data); // pass new product to parent
     } catch (err) {
@@ -95,7 +92,6 @@ const CreateProductDrawer = ({ visible, onClose, onProductCreated }) => {
       <Form
         layout="vertical"
         form={form}
-        onValuesChange={() => setIsModified(true)}
       >
         <Form.Item
           label="Title"
