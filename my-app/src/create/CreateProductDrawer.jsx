@@ -18,7 +18,7 @@ const CreateProductDrawer = ({ visible, onClose, onProductCreated }) => {
   const [categories, setCategories] = useState([]);
 
   const handleClose = () => {
-    if (form.isFieldsTouched()) {
+    if (form.isFieldsTouched()) {//if condition to show modal if changes are made in form
       Modal.confirm({
         title: "Discard Changes?",
         content: "You have unsaved changes. Are you sure you want to close?",
@@ -35,9 +35,9 @@ const CreateProductDrawer = ({ visible, onClose, onProductCreated }) => {
   };
 
   const handleSave = async () => {
-    try {
+    try {//try block to handle the product creation 
       const values = await form.validateFields();
-      isloading(true);
+      isloading(true);//loading state when api call is made
       const res = await fetch("https://dummyjson.com/products/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -49,7 +49,7 @@ const CreateProductDrawer = ({ visible, onClose, onProductCreated }) => {
       }
 
       const data = await res.json();
-      message.success("Product created successfully!");
+      message.success("Product created successfully!");//message to show when product is created 
       form.resetFields();
       onClose();
       onProductCreated(data); // pass new product to parent
@@ -60,8 +60,6 @@ const CreateProductDrawer = ({ visible, onClose, onProductCreated }) => {
       isloading(false);
     }
   };
-  console.log("categories:", categories);
-
   useEffect(() => {
     // Fetch categories when drawer opens
     if (visible) {
@@ -129,7 +127,7 @@ const CreateProductDrawer = ({ visible, onClose, onProductCreated }) => {
           <Select placeholder="Select a category">
             {categories.map((cat) => (
               <Option key={cat} value={cat}>
-                {/* to make the first letter capital */}
+                {/* to make the first letter capital inside list*/}
                 {cat.charAt(0).toUpperCase() + cat.slice(1)}
               </Option>
             ))}

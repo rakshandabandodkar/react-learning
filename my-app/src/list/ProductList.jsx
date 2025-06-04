@@ -9,7 +9,7 @@ const ProductTable = () => {
   const [products, setProducts] = useState([]);
   const [loading, isloading] = useState(false);
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();//react router hook for url search
 
   const initialPage = parseInt(searchParams.get("page")) || 1;
   const initialPageSize = parseInt(searchParams.get("pageSize")) || 10;
@@ -38,7 +38,7 @@ const ProductTable = () => {
     } catch (error) {
       console.error("Error fetching products:", error);
       message.error("Failed to fetch products. Please try again later.");
-    } finally {
+    } finally { 
       isloading(false);
     }
   };
@@ -71,7 +71,7 @@ const ProductTable = () => {
       <Header onCreate={() => setDrawerVisible(true)} />
       <CreateProductDrawer
         visible={drawerVisible}
-        onClose={() => setDrawerVisible(false)}
+        onClose={() => setDrawerVisible(false)} //to close the drawer on cancle
         onProductCreated={(newProduct) => {
           setProducts((prev) => [newProduct, ...prev]); // show new product in list
         }}
