@@ -53,8 +53,8 @@ const CreateProductDrawer = ({ visible, onClose, onProductCreated }) => {
       form.resetFields();
       onClose();
       onProductCreated(data); // pass new product to parent
-    } catch (err) {
-      console.error("Error creating product:", err);
+    } catch (error) {
+      console.error("Error creating product:", error);
       message.error("Failed to create product");
     } finally {
       isloading(false);
