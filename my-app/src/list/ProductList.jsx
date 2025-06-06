@@ -62,7 +62,7 @@ const ProductTable = () => {
     setEditDrawerVisible(false);
     setEditingProduct(null);
   };
-  const columns = [
+  const columns = useMemo(() => [//usememo to reduce re-renders
     { title: "ID", dataIndex: "id", key: "id" },
     { title: "Title", dataIndex: "title", key: "title", className: styles.colorprimary },
     { title: "Brand", dataIndex: "brand", key: "brand" },
@@ -83,7 +83,7 @@ const ProductTable = () => {
         }}>Edit</Button>
       ),
     },
-  ];
+  ], []);
 
   return (
     <div>
