@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { Table, message, Button } from "antd";
 import { useSearchParams } from "react-router-dom";
 import styles from './ProductList.module.scss';
