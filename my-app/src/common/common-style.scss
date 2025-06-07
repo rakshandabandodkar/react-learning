@@ -29,3 +29,6 @@ body {
     width: 100%;
   }
 }
+button:focus, button:focus-visible {
+    outline: none;
+}

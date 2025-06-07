@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { Table, message } from "antd";
+import React, { useEffect, useState, useMemo } from "react";
+import { Table, message, Button } from "antd";
 import { useSearchParams } from "react-router-dom";
 import styles from './ProductList.module.scss';
 import Header from './Header';
 import CreateProductDrawer from '../create/CreateProductDrawer';
+import UpdateProductDrawer from "../update/UpdateProductDrawer";
+
 const ProductTable = () => {
+
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [products, setProducts] = useState([]);
   const [loading, isloading] = useState(false);
-
+  const [editDrawerVisible, setEditDrawerVisible] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();//react router hook for url search
 
   const initialPage = parseInt(searchParams.get("page")) || 1;
@@ -35,10 +39,12 @@ const ProductTable = () => {
       const data = await res.json();
       setProducts(data.products);
       setParams((prev) => ({ ...prev, total: data.total }));
-    } catch (error) {
+    }
+    catch (error) {
       console.error("Error fetching products:", error);
       message.error("Failed to fetch products. Please try again later.");
-    } finally { 
+    }
+    finally {
       isloading(false);
     }
   };
@@ -49,21 +55,58 @@ const ProductTable = () => {
 
   const handlePageChange = (page, pageSize) => {
     setParams((prev) => ({ ...prev, page, pageSize }));
-    setSearchParams({ page, pageSize }); 
+    setSearchParams({ page, pageSize });
   };
 
-  const columns = [
-    { title: "ID", dataIndex: "id", key: "id" },
-    { title: "Title", dataIndex: "title", key: "title", className: styles.colorprimary },
-    { title: "Brand", dataIndex: "brand", key: "brand" },
+  const handleProductUpdated = (updatedProduct) => {
+    setProducts((prev) =>
+      prev.map((product) =>
+        product.id === updatedProduct.id ? updatedProduct : product
+      )
+    );
+    setEditDrawerVisible(false);
+    setEditingProduct(null);
+  };
+
+  const columns = useMemo(() => [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id"
+    },
+    {
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
+      className: styles.colorprimary
+    },
+    {
+      title: "Brand",
+      dataIndex: "brand",
+      key: "brand"
+    },
     {
       title: "Price",
       dataIndex: "price",
       key: "price",
       render: (p) => <span className={styles.price}>${p}</span>
     },
-    { title: "Category", dataIndex: "category", key: "category" },
-  ];
+    {
+      title: "Category",
+      dataIndex: "category",
+      key: "category"
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <Button type="link" onClick={() => {
+          setEditingProduct(record);
+          setEditDrawerVisible(true);
+        }}>Edit</Button>
+      ),
+    },
+  ], []);
 
   return (
     <div>
@@ -88,6 +131,15 @@ const ProductTable = () => {
           showSizeChanger: true,
           onChange: handlePageChange,
         }}
+      />
+      <UpdateProductDrawer
+        visible={editDrawerVisible}
+        onClose={() => {
+          setEditDrawerVisible(false);
+          setEditingProduct(null);
+        }}
+        CurrentEditedProduct={editingProduct}
+        onProductUpdated={handleProductUpdated}
       />
     </div>
 
