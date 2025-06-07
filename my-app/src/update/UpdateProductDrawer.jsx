@@ -12,13 +12,25 @@ import {
 } from "antd";
 const { Option } = Select;
 
-const UpdateProductDrawer = ({ visible, onClose, product, onProductUpdated }) => {
+const UpdateProductDrawer = ({ visible, onClose, CurrentEditedProduct, onProductUpdated }) => {
     const [form] = Form.useForm();
     const [loading, isloading] = useState(false);
     const [categories, setCategories] = useState([]);
 
     const handleClose = () => {
-        if (form.isFieldsTouched()) {//if condition to show modal if changes are made in form
+        const currentValues = form.getFieldsValue();
+        const originalValues = {
+            title: CurrentEditedProduct?.title,
+            price: CurrentEditedProduct?.price,
+            brand: CurrentEditedProduct?.brand,
+            category: CurrentEditedProduct?.category
+        };
+
+        const hasChanged = Object.keys(originalValues).some((key) => {
+            return currentValues[key] !== originalValues[key];
+        });
+
+        if (hasChanged) {
             Modal.confirm({
                 title: "Discard Changes?",
                 content: "You have unsaved changes. Are you sure you want to close?",
@@ -34,11 +46,12 @@ const UpdateProductDrawer = ({ visible, onClose, product, onProductUpdated }) =>
         }
     };
 
+
     const handleSave = async () => {
         try {//try block to handle the product creation 
             const values = await form.validateFields();
             isloading(true);//loading state when api call is made
-            const res = await fetch(`https://dummyjson.com/products/${product.id}`, {
+            const res = await fetch(`https://dummyjson.com/products/${CurrentEditedProduct.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(values),
@@ -53,18 +66,22 @@ const UpdateProductDrawer = ({ visible, onClose, product, onProductUpdated }) =>
             form.resetFields();
             onClose();
             onProductUpdated(data); // pass updated product to parent
-        } catch (error) {
+        }
+        catch (error) {
             console.error("Error creating product:", error);
             message.error("Failed to update product");
-        } finally {
+        }
+        finally {
             isloading(false);
         }
     };
+
     useEffect(() => {
-        if (product) {
-            form.setFieldsValue(product);
+        if (CurrentEditedProduct) {
+            form.setFieldsValue(CurrentEditedProduct);
         }
-    }, [product, form]);
+    }, [CurrentEditedProduct, form]);
+
     useEffect(() => {
         // Fetch categories when drawer opens
         if (visible) {
@@ -74,6 +91,7 @@ const UpdateProductDrawer = ({ visible, onClose, product, onProductUpdated }) =>
                 .catch(() => message.error("Failed to fetch categories"));
         }
     }, [visible]);
+
     return (
         <Drawer
             title="Update Product"

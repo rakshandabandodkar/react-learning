@@ -5,7 +5,9 @@ import styles from './ProductList.module.scss';
 import Header from './Header';
 import CreateProductDrawer from '../create/CreateProductDrawer';
 import UpdateProductDrawer from "../update/UpdateProductDrawer";
+
 const ProductTable = () => {
+
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [products, setProducts] = useState([]);
   const [loading, isloading] = useState(false);
@@ -37,10 +39,12 @@ const ProductTable = () => {
       const data = await res.json();
       setProducts(data.products);
       setParams((prev) => ({ ...prev, total: data.total }));
-    } catch (error) {
+    }
+    catch (error) {
       console.error("Error fetching products:", error);
       message.error("Failed to fetch products. Please try again later.");
-    } finally {
+    }
+    finally {
       isloading(false);
     }
   };
@@ -53,6 +57,7 @@ const ProductTable = () => {
     setParams((prev) => ({ ...prev, page, pageSize }));
     setSearchParams({ page, pageSize });
   };
+
   const handleProductUpdated = (updatedProduct) => {
     setProducts((prev) =>
       prev.map((product) =>
@@ -62,17 +67,35 @@ const ProductTable = () => {
     setEditDrawerVisible(false);
     setEditingProduct(null);
   };
-  const columns = useMemo(() => [//usememo to reduce re-renders
-    { title: "ID", dataIndex: "id", key: "id" },
-    { title: "Title", dataIndex: "title", key: "title", className: styles.colorprimary },
-    { title: "Brand", dataIndex: "brand", key: "brand" },
+
+  const columns = useMemo(() => [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id"
+    },
+    {
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
+      className: styles.colorprimary
+    },
+    {
+      title: "Brand",
+      dataIndex: "brand",
+      key: "brand"
+    },
     {
       title: "Price",
       dataIndex: "price",
       key: "price",
       render: (p) => <span className={styles.price}>${p}</span>
     },
-    { title: "Category", dataIndex: "category", key: "category" },
+    {
+      title: "Category",
+      dataIndex: "category",
+      key: "category"
+    },
     {
       title: "Action",
       key: "action",
@@ -115,7 +138,7 @@ const ProductTable = () => {
           setEditDrawerVisible(false);
           setEditingProduct(null);
         }}
-        product={editingProduct}
+        CurrentEditedProduct={editingProduct}
         onProductUpdated={handleProductUpdated}
       />
     </div>

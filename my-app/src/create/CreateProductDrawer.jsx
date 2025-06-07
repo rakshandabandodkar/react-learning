@@ -35,7 +35,8 @@ const CreateProductDrawer = ({ visible, onClose, onProductCreated }) => {
   };
 
   const handleSave = async () => {
-    try {//try block to handle the product creation 
+    //try block to handle the product creation 
+    try {
       const values = await form.validateFields();
       isloading(true);//loading state when api call is made
       const res = await fetch("https://dummyjson.com/products/add", {
@@ -53,13 +54,16 @@ const CreateProductDrawer = ({ visible, onClose, onProductCreated }) => {
       form.resetFields();
       onClose();
       onProductCreated(data); // pass new product to parent
-    } catch (error) {
+    }
+    catch (error) {
       console.error("Error creating product:", error);
       message.error("Failed to create product");
-    } finally {
+    }
+    finally {
       isloading(false);
     }
   };
+
   useEffect(() => {
     // Fetch categories when drawer opens
     if (visible) {
@@ -69,6 +73,7 @@ const CreateProductDrawer = ({ visible, onClose, onProductCreated }) => {
         .catch(() => message.error("Failed to fetch categories"));
     }
   }, [visible]);
+
   return (
     <Drawer
       title="Create New Product"
