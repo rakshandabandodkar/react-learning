@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { Table, message, Button } from "antd";
+import { Table, message, Button, Space, Modal } from "antd";
 import { useSearchParams } from "react-router-dom";
 import styles from './ProductList.module.scss';
 import Header from './Header';
@@ -48,6 +48,39 @@ const ProductTable = () => {
       isloading(false);
     }
   };
+
+  const handleDelete = async (productId) => {
+    Modal.confirm({
+      title: "Are you sure you want to delete this product?",
+      okText: "Yes",
+      cancelText: "No",
+      onOk: async () => {
+        isloading(true);
+        try {
+          const res = await fetch(`https://dummyjson.com/products/${productId}`, {
+            method: "DELETE",
+          });
+
+          if (!res.ok) {
+            throw new Error(`Delete failed with status ${res.status}`);
+          }
+
+          const data = await res.json();
+          message.success("Product deleted successfully");
+
+          // Remove the deleted product from local state
+          setProducts((prev) => prev.filter((product) => product.id !== productId));
+        } catch (error) {
+          console.error("Delete error:", error);
+          message.error("Failed to delete product");
+        }
+        finally {
+          isloading(false);
+        }
+      }
+    });
+  };
+
 
   useEffect(() => {
     fetchProducts();
@@ -100,10 +133,16 @@ const ProductTable = () => {
       title: "Action",
       key: "action",
       render: (_, record) => (
-        <Button type="link" onClick={() => {
-          setEditingProduct(record);
-          setEditDrawerVisible(true);
-        }}>Edit</Button>
+        <Space>
+          <Button type="link" onClick={() => {
+            setEditingProduct(record);
+            setEditDrawerVisible(true);
+          }}>Edit</Button>
+          <Button danger type="link" onClick={() => handleDelete(record.id)}>
+            Delete
+          </Button>
+        </Space>
+
       ),
     },
   ], []);
