@@ -1,34 +1,58 @@
 $color-primary: '#646cff';
+
 // styles.scss
 body {
   background-color: #ffffff;
 }
 
-.custom-button {
-  background-color: #722ed1;
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 8px;
-}
-.custom-drawer{
-.ant-drawer-close{
-  position: absolute;
+
+.custom-drawer {
+  .ant-drawer-close {
+    position: absolute;
     left: -38px;
     background: white;
     width: 40px;
     padding: 4px;
     top: 0;
     height: 40px;
+  }
 }
+
+.w-100 {
+  width: 100% !important;
 }
-.w-100{
-  width: 100%!important;
-}
-.drawer-footer{
-  .ant-space,.ant-space-item,.ant-btn{
+
+.drawer-footer {
+
+  .ant-space,
+  .ant-space-item,
+  .ant-btn {
     width: 100%;
   }
 }
-button:focus, button:focus-visible {
-    outline: none;
+
+button:focus,
+button:focus-visible {
+  outline: none;
 }
+
+//global pagination style
+.ant-table-pagination.ant-pagination {
+  padding: 16px;
+  position: fixed;
+  bottom: 0;
+  background: white;
+  width: calc(100% - 200px);
+  right: 0;
+  box-shadow: -5px -3px 12px 0 rgba(0, 0, 0, .1);
+  margin: 0 !important;
+}
+
+.ant-table-cell::before {
+  display: none;
+}
+
+th.text-center {
+  text-align: center !important;
+}
+
