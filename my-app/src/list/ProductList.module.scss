@@ -1,10 +1,48 @@
 $color-primary: #646cff;
 
-.colorprimary{
-    color: $color-primary;
-    font-weight: bold;
+.colorprimary {
+  color: $color-primary;
+  font-weight: bold;
 }
+
 .price {
   color: green;
   font-weight: bold;
+}
+
+.logostyle {
+  padding: 16px;
+  width: 150px;
+}
+
+.menustyle {
+  :global(.ant-menu-item) {
+    margin: 0;
+    width: 100%;
+    border-radius: 0;
+    font-size: 16px;
+    padding-left: 16px !important;
+
+    :global(.anticon) {
+      font-size: 16px;
+    }
+  }
+}
+
+.tablestyle {
+  :global(.ant-table-cell) {
+    padding: 10px 16px!important;
+  }
+
+
+  thead,
+  tbody {
+    tr {
+
+      th:first-child,
+      td:first-child {
+        padding-left: 24px;
+      }
+    }
+  }
 }

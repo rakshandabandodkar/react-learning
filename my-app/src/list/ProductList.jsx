@@ -1,13 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { Table, message } from "antd";
+import React, { useEffect, useState, useMemo } from "react";
+import { Table, message, Button, Space, Modal, Layout, Menu, theme } from "antd";
 import { useSearchParams } from "react-router-dom";
 import styles from './ProductList.module.scss';
-
+import Header from './Header';
+import Logo from '../assets/logo.png'
+import CreateProductDrawer from '../create/CreateProductDrawer';
+import UpdateProductDrawer from "../update/UpdateProductDrawer";
+import { ProductOutlined } from '@ant-design/icons';
+const { Sider, Content } = Layout;
 const ProductTable = () => {
+
+  const [drawerVisible, setDrawerVisible] = useState(false);
   const [products, setProducts] = useState([]);
   const [loading, isloading] = useState(false);
-
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [editDrawerVisible, setEditDrawerVisible] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();//react router hook for url search
 
   const initialPage = parseInt(searchParams.get("page")) || 1;
   const initialPageSize = parseInt(searchParams.get("pageSize")) || 10;
@@ -33,13 +41,48 @@ const ProductTable = () => {
       const data = await res.json();
       setProducts(data.products);
       setParams((prev) => ({ ...prev, total: data.total }));
-    } catch (error) {
+    }
+    catch (error) {
       console.error("Error fetching products:", error);
       message.error("Failed to fetch products. Please try again later.");
-    } finally {
+    }
+    finally {
       isloading(false);
     }
   };
+
+  const handleDelete = async (productId) => {
+    Modal.confirm({
+      title: "Are you sure you want to delete this product?",
+      okText: "Yes",
+      cancelText: "No",
+      onOk: async () => {
+        isloading(true);
+        try {
+          const res = await fetch(`https://dummyjson.com/products/${productId}`, {
+            method: "DELETE",
+          });
+
+          if (!res.ok) {
+            throw new Error(`Delete failed with status ${res.status}`);
+          }
+
+          const data = await res.json();
+          message.success("Product deleted successfully");
+
+          // Remove the deleted product from local state
+          setProducts((prev) => prev.filter((product) => product.id !== productId));
+        } catch (error) {
+          console.error("Delete error:", error);
+          message.error("Failed to delete product");
+        }
+        finally {
+          isloading(false);
+        }
+      }
+    });
+  };
+
 
   useEffect(() => {
     fetchProducts();
@@ -47,36 +90,133 @@ const ProductTable = () => {
 
   const handlePageChange = (page, pageSize) => {
     setParams((prev) => ({ ...prev, page, pageSize }));
-    setSearchParams({ page, pageSize }); // ✅ update URL
+    setSearchParams({ page, pageSize });
   };
 
-  const columns = [
-    { title: "ID", dataIndex: "id", key: "id" },
-    { title: "Title", dataIndex: "title", key: "title", className: styles.colorprimary },
-    { title: "Brand", dataIndex: "brand", key: "brand" },
+  const handleProductUpdated = (updatedProduct) => {
+    setProducts((prev) =>
+      prev.map((product) =>
+        product.id === updatedProduct.id ? updatedProduct : product
+      )
+    );
+    setEditDrawerVisible(false);
+    setEditingProduct(null);
+  };
+
+  const columns = useMemo(() => [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id"
+    },
+    {
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
+      className: styles.colorprimary
+    },
+    {
+      title: "Brand",
+      dataIndex: "brand",
+      key: "brand"
+    },
     {
       title: "Price",
       dataIndex: "price",
+      width: "200px",
       key: "price",
       render: (p) => <span className={styles.price}>${p}</span>
     },
-    { title: "Category", dataIndex: "category", key: "category" },
-  ];
+    {
+      title: "Category",
+      dataIndex: "category",
+      width: "160px",
+      key: "category"
+    },
+    {
+      title: "Action",
+      className: "text-center",
+      width: "250px",
+      key: "action",
+      render: (_, record) => (
+        <Space>
+          <Button type="link" onClick={() => {
+            setEditingProduct(record);
+            setEditDrawerVisible(true);
+          }}>Edit</Button>
+          <Button danger type="link" onClick={() => handleDelete(record.id)}>
+            Delete
+          </Button>
+        </Space>
 
+      ),
+    },
+  ], []);
+
+  const [collapsed, setCollapsed] = useState(false);
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
   return (
-    <Table
-      columns={columns}
-      dataSource={products}
-      rowKey="id"
-      loading={loading}
-      pagination={{
-        current: params.page,
-        pageSize: params.pageSize,
-        total: params.total,
-        showSizeChanger: true,
-        onChange: handlePageChange,
-      }}
-    />
+    <>
+      <Layout>
+        <Sider className="min-h-screen" trigger={null} collapsible collapsed={collapsed}>
+          <div className={styles.logostyle}>
+            <img src={Logo} alt="logo" />
+          </div>
+          <Menu
+            className={styles.menustyle}
+            theme="dark"
+            mode="inline"
+            defaultSelectedKeys={['1']}
+            items={[
+              {
+                key: '1',
+                icon: <ProductOutlined />,
+                label: 'Products',
+              }
+            ]}
+          />
+        </Sider>
+        <Layout>
+          {/* header component containing create btn */}
+          <Header onCreate={() => setDrawerVisible(true)} />
+          <CreateProductDrawer
+            visible={drawerVisible}
+            onClose={() => setDrawerVisible(false)} //to close the drawer on cancle
+            onProductCreated={(newProduct) => {
+              setProducts((prev) => [newProduct, ...prev]); // show new product in list
+            }}
+          />
+          <Content>
+            <Table
+              className={styles.tablestyle}
+              columns={columns}
+              dataSource={products}
+              rowKey="id"
+              loading={loading}
+              pagination={{
+                current: params.page,
+                pageSize: params.pageSize,
+                total: params.total,
+                showSizeChanger: true,
+                onChange: handlePageChange,
+              }}
+            />
+            <UpdateProductDrawer
+              visible={editDrawerVisible}
+              onClose={() => {
+                setEditDrawerVisible(false);
+                setEditingProduct(null);
+              }}
+              CurrentEditedProduct={editingProduct}
+              onProductUpdated={handleProductUpdated}
+            />
+          </Content>
+        </Layout>
+      </Layout>
+    </>
+
   );
 };
 
