@@ -14,7 +14,7 @@ function App() {
       token: themeJson.token
     }}>
       <Layout>
-        <Router>
+        <Router basename="/react-learning">
           <Routes>
             {/* Redirect root / to /products */}
             <Route path="/" element={<Navigate to="/products" replace />} />
