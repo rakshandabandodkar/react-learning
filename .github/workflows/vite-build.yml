@@ -11,7 +11,7 @@ jobs:
     runs-on: windows-latest
     defaults:
       run:
-        working-directory: my-app
+        working-directory: .
 
     steps:
       - name: Checkout code
