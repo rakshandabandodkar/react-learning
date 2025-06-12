@@ -6,12 +6,14 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import ProductTable from './list/ProductList';
 import './common/common-style.scss'
 import styles from './App.module.scss';
+import themeJson from '../theme.json';
+
 function App() {
   return (
-    <ConfigProvider >
-
-      <Layout className={styles.padding20}>
-        <Title level={2}>My Products</Title>
+    <ConfigProvider theme={{
+      token: themeJson.token
+    }}>
+      <Layout>
         <Router>
           <Routes>
             {/* Redirect root / to /products */}

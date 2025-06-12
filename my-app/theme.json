@@ -1,0 +1,16 @@
+{
+  "components": {
+    "Table": {
+      "padding": 10
+    },
+    "Button": {
+      "borderRadiusSM": 2,
+      "borderRadiusLG": 2,
+      "borderRadius": 2
+    }
+  },
+  "token": {
+    "colorPrimary": "#646cff",
+    "colorInfo": "#646cff"
+  }
+}

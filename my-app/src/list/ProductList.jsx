@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { Table, message, Button, Space, Modal } from "antd";
+import { Table, message, Button, Space, Modal, Layout, Menu, theme } from "antd";
 import { useSearchParams } from "react-router-dom";
 import styles from './ProductList.module.scss';
 import Header from './Header';
+import Logo from '../assets/logo.png'
 import CreateProductDrawer from '../create/CreateProductDrawer';
 import UpdateProductDrawer from "../update/UpdateProductDrawer";
-
+import { ProductOutlined } from '@ant-design/icons';
+const { Sider, Content } = Layout;
 const ProductTable = () => {
 
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -121,16 +123,20 @@ const ProductTable = () => {
     {
       title: "Price",
       dataIndex: "price",
+      width: "200px",
       key: "price",
       render: (p) => <span className={styles.price}>${p}</span>
     },
     {
       title: "Category",
       dataIndex: "category",
+      width: "160px",
       key: "category"
     },
     {
       title: "Action",
+      className: "text-center",
+      width: "250px",
       key: "action",
       render: (_, record) => (
         <Space>
@@ -147,40 +153,69 @@ const ProductTable = () => {
     },
   ], []);
 
+  const [collapsed, setCollapsed] = useState(false);
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
   return (
-    <div>
-      {/* header component containing create btn */}
-      <Header onCreate={() => setDrawerVisible(true)} />
-      <CreateProductDrawer
-        visible={drawerVisible}
-        onClose={() => setDrawerVisible(false)} //to close the drawer on cancle
-        onProductCreated={(newProduct) => {
-          setProducts((prev) => [newProduct, ...prev]); // show new product in list
-        }}
-      />
-      <Table
-        columns={columns}
-        dataSource={products}
-        rowKey="id"
-        loading={loading}
-        pagination={{
-          current: params.page,
-          pageSize: params.pageSize,
-          total: params.total,
-          showSizeChanger: true,
-          onChange: handlePageChange,
-        }}
-      />
-      <UpdateProductDrawer
-        visible={editDrawerVisible}
-        onClose={() => {
-          setEditDrawerVisible(false);
-          setEditingProduct(null);
-        }}
-        CurrentEditedProduct={editingProduct}
-        onProductUpdated={handleProductUpdated}
-      />
-    </div>
+    <>
+      <Layout>
+        <Sider className="min-h-screen" trigger={null} collapsible collapsed={collapsed}>
+          <div className={styles.logostyle}>
+            <img src={Logo} alt="logo" />
+          </div>
+          <Menu
+            className={styles.menustyle}
+            theme="dark"
+            mode="inline"
+            defaultSelectedKeys={['1']}
+            items={[
+              {
+                key: '1',
+                icon: <ProductOutlined />,
+                label: 'Products',
+              }
+            ]}
+          />
+        </Sider>
+        <Layout>
+          {/* header component containing create btn */}
+          <Header onCreate={() => setDrawerVisible(true)} />
+          <CreateProductDrawer
+            visible={drawerVisible}
+            onClose={() => setDrawerVisible(false)} //to close the drawer on cancle
+            onProductCreated={(newProduct) => {
+              setProducts((prev) => [newProduct, ...prev]); // show new product in list
+            }}
+          />
+          <Content>
+            <Table
+              className={styles.tablestyle}
+              columns={columns}
+              dataSource={products}
+              rowKey="id"
+              loading={loading}
+              pagination={{
+                current: params.page,
+                pageSize: params.pageSize,
+                total: params.total,
+                showSizeChanger: true,
+                onChange: handlePageChange,
+              }}
+            />
+            <UpdateProductDrawer
+              visible={editDrawerVisible}
+              onClose={() => {
+                setEditDrawerVisible(false);
+                setEditingProduct(null);
+              }}
+              CurrentEditedProduct={editingProduct}
+              onProductUpdated={handleProductUpdated}
+            />
+          </Content>
+        </Layout>
+      </Layout>
+    </>
 
   );
 };
