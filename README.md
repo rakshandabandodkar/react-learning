@@ -1,7 +1,6 @@
 # react-learning
 
 # install project dependencies
-cd my-app
 npm install
 
 # running app in development mode
