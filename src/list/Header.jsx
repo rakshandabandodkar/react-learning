@@ -8,7 +8,7 @@ const Header = ({ title = 'Product List', onCreate }) => {
     <div className={styles.headerContainer}>
       <h2 className={styles.title}>{title}</h2>
       <Button type="primary" onClick={onCreate}>
-        <PlusOutlined />Add New Product
+        <PlusOutlined />Add Product
       </Button>
     </div>
   );

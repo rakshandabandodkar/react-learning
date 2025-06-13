@@ -46,6 +46,10 @@ button:focus-visible {
   right: 0;
   box-shadow: -5px -3px 12px 0 rgba(0, 0, 0, .1);
   margin: 0 !important;
+
+  @media (max-width: 768px) {
+    width: calc(100% - 50px) !important;
+  }
 }
 
 .ant-table-cell::before {
@@ -56,3 +60,18 @@ th.text-center {
   text-align: center !important;
 }
 
+//sider responsive
+.ant-layout-sider {
+  @media (max-width: 768px) {
+    flex: 0 0 50px !important;
+    min-width: 50px !important;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .ant-layout.ant-layout-has-sider>.ant-layout,
+  .ant-layout.ant-layout-has-sider>.ant-layout-content {
+    width: auto;
+  }
+}
