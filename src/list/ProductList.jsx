@@ -6,7 +6,7 @@ import Header from './Header';
 import Logo from '../assets/logo.png'
 import CreateProductDrawer from '../create/CreateProductDrawer';
 import UpdateProductDrawer from "../update/UpdateProductDrawer";
-import { ProductOutlined } from '@ant-design/icons';
+import { ProductOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 const { Sider, Content } = Layout;
 const ProductTable = () => {
 
@@ -118,7 +118,8 @@ const ProductTable = () => {
     {
       title: "Brand",
       dataIndex: "brand",
-      key: "brand"
+      key: "brand",
+      className: "hidden sm:table-cell"
     },
     {
       title: "Price",
@@ -140,12 +141,12 @@ const ProductTable = () => {
       key: "action",
       render: (_, record) => (
         <Space>
-          <Button type="link" onClick={() => {
+          <Button className="!p-0" type="link" onClick={() => {
             setEditingProduct(record);
             setEditDrawerVisible(true);
-          }}>Edit</Button>
-          <Button danger type="link" onClick={() => handleDelete(record.id)}>
-            Delete
+          }}><EditOutlined /><span className="hidden sm:flex">Edit</span></Button>
+          <Button className="!p-0" danger type="link" onClick={() => handleDelete(record.id)}>
+            <DeleteOutlined /><span className="hidden sm:flex">Delete</span>
           </Button>
         </Space>
 
@@ -160,9 +161,15 @@ const ProductTable = () => {
   return (
     <>
       <Layout>
-        <Sider className="min-h-screen" trigger={null} collapsible collapsed={collapsed}>
+        <Sider
+          className="min-h-screen"
+          trigger={null}
+          collapsible
+          collapsed={collapsed}
+        >
           <div className={styles.logostyle}>
             <img src={Logo} alt="logo" />
+            <span className="logotext font-bold text-white hidden md:flex">SHOPPING</span>
           </div>
           <Menu
             className={styles.menustyle}
@@ -173,7 +180,7 @@ const ProductTable = () => {
               {
                 key: '1',
                 icon: <ProductOutlined />,
-                label: 'Products',
+                label: <span className="hidden sm:flex">Products</span>,
               }
             ]}
           />

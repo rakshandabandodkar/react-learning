@@ -12,7 +12,17 @@ $color-primary: #646cff;
 
 .logostyle {
   padding: 16px;
-  width: 150px;
+  display: flex;
+
+  img {
+    height: 27px;
+    margin-right: 8px;
+  }
+
+  .logotext {
+    // color: white;
+    font-size: 20px;
+  }
 }
 
 .menustyle {
@@ -30,10 +40,27 @@ $color-primary: #646cff;
 }
 
 .tablestyle {
+  margin-bottom: 64px;
   :global(.ant-table-cell) {
-    padding: 10px 16px!important;
+    padding: 10px 16px !important;
+
+    @media (max-width: 768px) {
+      padding: 8px 10px !important;
+
+    }
   }
 
+  colgroup {
+    col {
+      @media (max-width: 768px) {
+        width: 100% !important;
+
+        &:first-child {
+          width: 50px !important;
+        }
+      }
+    }
+  }
 
   thead,
   tbody {
