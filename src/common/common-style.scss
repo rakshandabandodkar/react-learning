@@ -67,3 +67,11 @@ th.text-center {
     min-width: 50px !important;
   }
 }
+
+@media (max-width: 768px) {
+
+  .ant-layout.ant-layout-has-sider>.ant-layout,
+  .ant-layout.ant-layout-has-sider>.ant-layout-content {
+    width: auto;
+  }
+}

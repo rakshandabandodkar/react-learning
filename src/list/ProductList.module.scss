@@ -17,6 +17,10 @@ $color-primary: #646cff;
   img {
     height: 27px;
     margin-right: 8px;
+
+    @media (max-width: 768px) {
+      height: 20px;
+    }
   }
 
   .logotext {
@@ -41,6 +45,7 @@ $color-primary: #646cff;
 
 .tablestyle {
   margin-bottom: 64px;
+
   :global(.ant-table-cell) {
     padding: 10px 16px !important;
 
